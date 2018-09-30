@@ -14,3 +14,11 @@
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+
+Route::post('todo-column', 'TodoColumnController@store');
+
+Route::put('todo-column/{id}', 'TodoColumnController@update');
+
+Route::post('todo-card', 'TodoCardController@store');
+
+Route::put('todo-column/{id}', 'TodoCardController@update');

@@ -55,7 +55,7 @@ class TodoBoardController extends Controller
             return json_encode($todo_board);
 
         } catch (\Exception $ex) {
-            $this->SystemException->store($ex, $this->controller_name, 'create');
+            $this->SystemException->store($ex, $this->controller_name, 'store');
         }
     }
 

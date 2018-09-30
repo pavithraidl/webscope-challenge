@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\TodoCard;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Auth;
+use Illuminate\Support\Facades\DB;
 
 class TodoCardController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->SystemException    = new SystemExceptionController();
+        $this->controller_name    = 'TodoCardController';
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,11 +45,26 @@ class TodoCardController extends Controller
      */
     public function store(Request $request)
     {
-        $user_id    = Auth::id();
 
-        return response()->json([
-            "user_id"   => $user_id,
-        ], 200);
+        try {
+
+            $todo_card  = new TodoCard();
+            $todo_card  -> title            = "";
+            $todo_card  -> body             = "";
+            $todo_card  -> todo_column_id   = $request->column_id;
+            $todo_card  -> status           = 1;
+            $todo_card  -> save();
+
+            return response()->json([
+                "card_id" => $todo_card->id,
+            ], Response::HTTP_CREATED);
+
+
+        } catch (\Exception $ex) {
+
+            $this->SystemException->store($ex, $this->controller_name, 'store');
+            return response()->json($ex, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -71,9 +96,24 @@ class TodoCardController extends Controller
      * @param  \App\TodoCard  $todoCard
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TodoCard $todoCard)
+    public function update(Request $request, $id)
     {
-        //
+
+        try {
+
+            $value  = !empty( $request->value ) ? $request->value: "" ;
+
+            DB::table('todo_cards')->where('id', $id)->update(array(
+                $request->field => $value
+            ));
+
+            return response()->json( true, Response::HTTP_OK);
+
+        }  catch (\Exception $ex) {
+
+            $this->SystemException->store($ex, $this->controller_name, 'update');
+            return response()->json($ex, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

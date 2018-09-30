@@ -121,9 +121,10 @@ h2 {
   }
 }
 
-.dd-handle .material-icons {
+.dd-handle.material-icons {
+  font-size: 16px;
+  cursor: move;
   color: #B0BEC5;
-  font-size: 14px;
   font-weight: 800;
   line-height: 2rem;
   position: relative;
@@ -191,6 +192,13 @@ button {
 ol {
   &.To-do {
     border-top: 5px solid #FFB300;
+    max-height: 1000px;
+    @include curtain_close_transform( .4s, .1s );
+
+    &.hide {
+      max-height: 0;
+      @include curtain_close_transform( .4s, 0 );
+    }
   }
   &.Gone {
     border-top: 5px solid #FF3D00;
@@ -240,6 +248,28 @@ ol {
   background: #fff;
   border-radius: 2px;
   box-sizing: border-box;
+
+  textarea {
+    background: transparent;
+    border: none;
+    text-align: left;
+  }
+
+  &.default-blank {
+    min-height: 10px;
+    height: 10px;
+    background: transparent;
+    border: none;
+  }
+}
+
+.modal {
+  display: none;
+  background: rgba(0, 0, 0, 0.52);
+
+  &.loaded {
+    display: block !important;
+  }
 }
 
 .title {
@@ -255,6 +285,11 @@ ol {
   -webkit-transform-origin: 149px 48px;
   transform-origin: 149px 48px;
   margin: 0;
+
+  input {
+    width: 100%;
+    border: none;
+  }
 }
 
 .text {

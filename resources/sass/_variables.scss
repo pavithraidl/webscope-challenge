@@ -24,3 +24,16 @@ $primary-gradient-hard: #fb7f68;
   background: linear-gradient(to top, $primary-gradient-light 0%,$primary-gradient-hard 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$primary-gradient-light, endColorstr=$primary-gradient-hard,GradientType=0 ); /* IE6-9 */
 }
+
+
+
+
+/* Transforms
+---------------------------------------------------------------------------*/
+@mixin curtain_close_transform($duration, $delay) {
+  -webkit-transition: all $duration $delay cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  -moz-transition: all $duration $delay cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  -ms-transition: all $duration $delay cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  -o-transition: all $duration $delay cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  transition: all $duration $delay cubic-bezier(0.645, 0.045, 0.355, 1.000);
+}

@@ -17,7 +17,6 @@ class CreateTodoCardsTable extends Migration
             $table->increments('id');
             $table->string('title', 64);
             $table->string('body', 512);
-            $table->dateTime('due_date');
             $table->integer('status');
             $table->unsignedInteger('todo_column_id');
             $table->timestamps();

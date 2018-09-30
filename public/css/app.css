@@ -1,5 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
+/* Transforms
+---------------------------------------------------------------------------*/
+
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -8903,9 +8906,10 @@ h2 .material-icons {
   line-height: 1.5;
 }
 
-.dd-handle .material-icons {
+.dd-handle.material-icons {
+  font-size: 16px;
+  cursor: move;
   color: #B0BEC5;
-  font-size: 14px;
   font-weight: 800;
   line-height: 2rem;
   position: relative;
@@ -9008,6 +9012,15 @@ ol {
 
 ol.To-do {
   border-top: 5px solid #FFB300;
+  max-height: 1000px;
+  -webkit-transition: all 0.4s 0.1s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.4s 0.1s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+ol.To-do.hide {
+  max-height: 0;
+  -webkit-transition: all 0.4s 0 cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.4s 0 cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 ol.Gone {
@@ -9047,6 +9060,28 @@ ol.Done {
           box-sizing: border-box;
 }
 
+.dd-item textarea {
+  background: transparent;
+  border: none;
+  text-align: left;
+}
+
+.dd-item.default-blank {
+  min-height: 10px;
+  height: 10px;
+  background: transparent;
+  border: none;
+}
+
+.modal {
+  display: none;
+  background: rgba(0, 0, 0, 0.52);
+}
+
+.modal.loaded {
+  display: block !important;
+}
+
 .title {
   -ms-flex-item-align: end;
       align-self: flex-end;
@@ -9061,6 +9096,11 @@ ol.Done {
   -webkit-transform-origin: 149px 48px;
   transform-origin: 149px 48px;
   margin: 0;
+}
+
+.title input {
+  width: 100%;
+  border: none;
 }
 
 .text {

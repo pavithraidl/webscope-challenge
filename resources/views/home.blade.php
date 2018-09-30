@@ -2,111 +2,77 @@
 
 @section('content')
     <!-- webscope todo columns -->
-    <div class="dd">
+    <div id="column-container" class="dd">
 
-        {{--<ol class=" To-do">--}}
-            {{--<div class="title">--}}
-                {{--<h2><i class="material-icons">report_problem</i> To do</h2></div>--}}
-            {{--<li class="dd-item" data-id="1">--}}
-                {{--<h3 class="title dd-handle">Do the dishes<i class=" material-icons ">filter_none</i></h3>--}}
-                {{--<div class="text" contenteditable="true">wwPaul Rand once said, “The public is more familiar with bad--}}
-                    {{--fucking design than good design. It is, in effect, conditioned to prefer--}}
+        <?php
+            use App\TodoColumn;
+            use App\TodoBoard;
+            use App\TodoCard;
 
-                {{--</div>--}}
-                {{--<i class="material-icons" id="label blue">label</i>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons" id="color">palette</i><i class="material-icons">edit</i><i--}}
-                            {{--class="material-icons">insert_link</i><i class="material-icons">attach_file</i></div>--}}
+            $todo_board     = TodoBoard::where('status', 1)->where('user_id', Auth::user()->id)->first();
+            $todo_columns   = TodoColumn::where('status', 1)->where('board_id', $todo_board->id)->get();
+        ?>
 
-            {{--</li>--}}
-            {{--<li class="dd-item" data-id="4">--}}
-                {{--<h3 class="title dd-handle"><i class=" material-icons ">filter_none</i>log-in bug</h3>--}}
-                {{--<div class="text" contenteditable="true">Paul Rand once said, “The public is more familiar with bad fucking--}}
-                    {{--design than good design. It is, in effect, conditioned to prefer bad design,--}}
-                {{--</div>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons">palette</i><i class="material-icons">edit</i><i class="material-icons">insert_link</i><i--}}
-                            {{--class="material-icons">attach_file</i></div>--}}
+        @foreach($todo_columns as $column)
 
-            {{--</li>--}}
-            {{--<li class="dd-item" data-id="3">--}}
-                {{--<h3 class="title dd-handle"><i class=" material-icons ">filter_none</i>UX design</h3>--}}
-                {{--<div class="text" contenteditable="true">Paul Rand once said, “The public is more familiar with bad fucking--}}
-                    {{--design than good design. It is, in effect, conditioned to prefer bad design,--}}
-                {{--</div>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons">palette</i><i class="material-icons">edit</i><i class="material-icons">insert_link</i><i--}}
-                            {{--class="material-icons">attach_file</i></div>--}}
+            <?php
+                $todo_cards = TodoCard::where('status', 1)->where('todo_column_id', $column->id)->get();
+            ?>
+        <ol class=" To-do" id="column-{{ $column->id }}">
+            <div class="title">
+                <h2><input type="text" placeholder="Title..." class="input-column-title" value="{{ $column->name }}" /> </h2>
+            </div>
 
+            <li class="dd-item default-blank"></li>
+            @foreach($todo_cards as $card)
+                <li class="dd-item" data-id="{{ $card->id }}">
+                    <h3 class="title"><i class=" material-icons dd-handle ">filter_none</i> <input type="input" class="input-todo-title" placeholder="todo title..." value="{{ $card->title }}" /></h3>
+                    <textarea class="text card-description" contenteditable="true" placeholder="description">{{ $card->body }}</textarea>
+                    <div class="actions">
+                        <i class="material-icons">palette</i>
+                        <i class="material-icons">edit</i><i class="material-icons">insert_link</i>
+                        <i class="material-icons">attach_file</i>
+                    </div>
+                </li>
+            @endforeach
 
-                {{--<div class="actions">--}}
-                    {{--<button class="addbutt"><i class="material-icons">control_point</i> Add new</button>--}}
-                {{--</div>--}}
-        {{--</ol>--}}
-        {{--<ol class=" progress">--}}
-            {{--<h2><i class="material-icons">build</i> In progress</h2>--}}
-            {{--<li class="dd-item" data-id="5">--}}
-                {{--<h3 class="title dd-handle"><i class=" material-icons ">filter_none</i> title of job</h3>--}}
-                {{--<div class="text" contenteditable="true">Paul Rand once said, “The public is more familiar with bad fucking--}}
-                    {{--design than good design. It is, in effect, conditioned to prefer bad design,--}}
-                {{--</div>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons">palette</i><i class="material-icons">edit</i><i class="material-icons">insert_link</i><i--}}
-                            {{--class="material-icons">attach_file</i></div>--}}
-
-            {{--</li>--}}
-            {{--<div class="actions">--}}
-                {{--<button class="addbutt"><i class="material-icons">control_point</i> Add new</button>--}}
-            {{--</div>--}}
-        {{--</ol>--}}
-        {{--<ol class="  Done">--}}
-            {{--<h2><i class="material-icons">check_circle</i> Done</h2>--}}
-            {{--<li class="dd-item" data-id="5">--}}
-                {{--<h3 class="title dd-handle"><i class=" material-icons ">filter_none</i> title of job</h3>--}}
-                {{--<div class="text" contenteditable="true">Paul Rand once said, “The public is more familiar with bad fucking--}}
-                    {{--design than good design. It is, in effect, conditioned to prefer bad design,--}}
-                {{--</div>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons">palette</i><i class="material-icons">edit</i><i class="material-icons">insert_link</i><i--}}
-                            {{--class="material-icons">attach_file</i></div>--}}
-
-            {{--</li>--}}
-            {{--</li>--}}
-            {{--<li class="dd-item" data-id="2">--}}
-                {{--<h3 class="title dd-handle"><i class=" material-icons ">filter_none</i> title of job</h3>--}}
-                {{--<div class="text" contenteditable="true">Paul Rand once said, “The public is more familiar with bad fucking--}}
-                    {{--design than good design. It is, in effect, conditioned to prefer bad design,--}}
-                {{--</div>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons">palette</i><i class="material-icons">edit</i><i class="material-icons">insert_link</i><i--}}
-                            {{--class="material-icons">attach_file</i></div>--}}
-
-            {{--</li>--}}
-            {{--<div class="actions">--}}
-                {{--<button class="addbutt"><i class="material-icons">control_point</i> Add new</button>--}}
-            {{--</div>--}}
-        {{--</ol>--}}
-        {{--<ol class=" Gone">--}}
-            {{--<h2><i class="material-icons">delete</i> Gone</h2>--}}
-            {{--<li class="dd-item" data-id="5">--}}
-                {{--<h3 class="title dd-handle"><i class=" material-icons ">filter_none</i> title of job</h3>--}}
-                {{--<div class="text" contenteditable="true">Paul Rand once said, “The public is more familiar with bad fucking--}}
-                    {{--design than good design. It is, in effect, conditioned to prefer bad design,--}}
-                {{--</div>--}}
-                {{--<div class="actions">--}}
-                    {{--<i class="material-icons">palette</i><i class="material-icons">edit</i><i class="material-icons">insert_link</i><i--}}
-                            {{--class="material-icons">attach_file</i></div>--}}
-
-            {{--</li>--}}
-            {{--<div class="actions">--}}
-                {{--<button class="addbutt"><i class="material-icons">control_point</i> Add new</button>--}}
-            {{--</div>--}}
-        {{--</ol>--}}
+                <div class="actions">
+                    <button class="addbutt btn-add-card"><i class="material-icons">control_point</i> Add Todo</button>
+                </div>
+        </ol>
+        @endforeach
 
     </div>
 
     <menu class="">
-        <button><i class="material-icons">timeline</i></button>
+        <button class="btn-display-modal"><i class="material-icons">timeline</i></button>
         <button class="btn-add-new-column"><i class="material-icons">playlist_add</i> Add new Column</button>
     </menu>
+
+
+
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+
+
+                        <canvas id="myChart" width="400" height="400"></canvas>
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

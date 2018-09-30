@@ -1,40 +1,6 @@
 (function($, window, document, undefined)
 {
 
-    $('.btn-add-new-column').on('click', function () {
-        api.create_new_column();
-    });
-
-
-    /**
-     * Api Calls
-     * -----------------
-     */
-    var api = {
-        create_new_column: function () {
-            var url = '/api/todo-column';
-
-            axios.post(
-                url,
-                {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                }
-                // other configuration there
-            })
-                .then(function (response) {
-                    alert(response);
-                })
-                .catch(function (error) {
-                    alert('oops');
-                    console.log(error);
-                })
-            ;
-        }
-    };
-
-
     var hasTouch = 'ontouchstart' in document;
 
     /**
@@ -71,6 +37,27 @@
         emptyClass      : 'dd-empty',
         expandBtnHTML   : '<button data-action="expand" type="button">Expand</button>',
         collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
+        todoColumnHTML  : '<ol class=" To-do hide">' +
+                          '     <div class="title">' +
+                          '         <h2><input type="text" placeholder="Title..." class="input-column-title" /> </h2>' +
+                          '     </div>' +
+                          '     <div class="actions">' +
+                          '         <button class="addbutt"><i class="material-icons">control_point</i> Add Todo</button>' +
+                          '     </div>' +
+                          '</ol>',
+        todoCardHTML    : '<li class="dd-item">' +
+                          '     <h3 class="title">' +
+                          '         <i class=" material-icons dd-handle ">filter_none</i> <input type="input-todo-title" placeholder="todo title..." />' +
+                          '     </h3>' +
+                          '     <div class="text card-description" contenteditable="true">' +
+                          '         description...' +
+                          '     </div>' +
+                          '     <div class="actions">' +
+                          '         <i class="material-icons">palette</i>' +
+                          '         <i class="material-icons">edit</i><i class="material-icons">insert_link</i>' +
+                          '         <i class="material-icons">attach_file</i>' +
+                          '     </div>' +
+                          '</li>',
         group           : 0,
         maxDepth        : 5,
         threshold       : 20
@@ -88,6 +75,74 @@
 
         init: function()
         {
+
+            /**
+             * @Bind_Events
+             * ---------------------
+             */
+            // Create a new column
+            $('.btn-add-new-column').on('click', function () {
+                list.createColumn();
+                // api.create_new_column();
+            });
+
+            // Change column title
+            $(document).on("change", ".input-column-title", function(e) {
+                var column_id   = ($(event.target).closest( "ol" )
+                                    .attr('id')).replace('column-', '');
+
+                var value       = $(event.target).val();
+
+                list.api_update_column(column_id, 'name', value);
+            });
+
+            // Add todo card
+            $(document).on("click", ".btn-add-card", function(e) {
+                var el  = $(event.target);
+                list.api_add_todo_card(el);
+            });
+
+            // // Set/Unset card description placeholder
+            // $(document).on("focus", ".card-description", function(e) {
+            //     var el  = $(event.target);
+            //     if( $.trim(el.html() === "description...") ) {
+            //         el.html("");
+            //     }
+            // });
+            // $(document).on("blur", ".card-description", function(e) {
+            //     var el  = $(event.target);
+            //     if( el.html() === "" ) {
+            //         el.html("description...");
+            //     }
+            // });
+
+            //Change Card title
+            $(document).on("change", ".input-todo-title", function(e) {
+                var $card_id   = ($(event.target).closest( "li" )
+                    .attr('data-id'));
+
+
+                var value       = $(event.target).val();
+
+                list.api_update_column($card_id, 'title', value);
+            });
+
+
+            //Change Card description
+            $(document).on("change", ".card-description", function(e) {
+                var $card_id   = ($(event.target).closest( "li" )
+                    .attr('data-id'));
+
+
+                var value       = $(event.target).val();
+
+                list.api_update_column($card_id, 'body', value);
+            });
+
+
+
+            // !end bind events
+
             var list = this;
 
             list.reset();
@@ -166,6 +221,113 @@
             list.w.on('mouseup', onEndEvent);
 
         },
+
+
+        /**
+         * @Api_Calls
+         * -----------------
+         */
+        api_create_new_column: function () {
+            var list    = this;
+            var url     = '/todo-column';
+
+            axios.post(
+                url,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    }
+                    // other configuration there
+                })
+                .then(function (response) {
+                    list.displayNewColumn(response);
+                })
+                .catch(function (error) {
+                    alert('oops. Error occurred.');
+                    console.log(error);
+                    return false;
+                })
+            ;
+        },
+
+        api_update_column: function (id, field, value) {
+            var list    = this;
+            var url     = '/todo-column/'+id;
+            var data    = { field: field, value: value }
+
+            axios.put(
+                url,
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    }
+                    // other configuration there
+                },)
+                .then(function (response) {
+                    // done
+                })
+                .catch(function (error) {
+                    alert('oops. Error occurred.');
+                    console.log(error);
+                })
+            ;
+        },
+
+        api_add_todo_card: function (el) {
+            var list        = this;
+            var url         = '/todo-card/';
+            var column_id   = ($(el).closest( "ol" )
+                .attr('id')).replace('column-', '');
+            var data        = { column_id: column_id };
+
+            axios.post(
+                url,
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    }
+                    // other configuration there
+                },)
+                .then(function (response) {
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    alert('oops. Error occurred.');
+                    console.log(error);
+                })
+            ;
+        },
+
+        api_update_card: function (id, field, value) {
+            var list    = this;
+            var url     = '/todo-card/'+id;
+            var data    = { field: field, value: value }
+
+            axios.put(
+                url,
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    }
+                    // other configuration there
+                },)
+                .then(function (response) {
+                    // done
+                })
+                .catch(function (error) {
+                    alert('oops. Error occurred.');
+                    console.log(error);
+                })
+            ;
+        },
+        // !end api calls
 
         serialize: function()
         {
@@ -262,6 +424,19 @@
             });
         },
 
+        createColumn: function() {
+            var list    = this;
+            list.api_create_new_column();
+        },
+
+        displayNewColumn: function(response) {
+
+            var el = $(this.options.todoColumnHTML);
+            el.attr('id', 'column-'+response.data.column_id);
+            $('#column-container').append(el);
+            el.removeClass('hide');
+        },
+
         setParent: function(li)
         {
             if (li.children(this.options.listNodeName).length) {
@@ -320,8 +495,11 @@
 
         dragStop: function(e)
         {
+            var list    = this;
+
             var el = this.dragEl.children(this.options.itemNodeName).first();
             el[0].parentNode.removeChild(el[0]);
+
             this.placeEl.replaceWith(el);
 
             this.dragEl.remove();
@@ -330,6 +508,14 @@
                 this.dragRootEl.trigger('change');
             }
             this.reset();
+
+
+            // Save new column data
+            var moved_card_el   = $(el[0])
+            var moved_card_id   = el.attr('data-id');
+            var new_column_id   = (el.closest('.To-do').attr('id')).replace('column-', '');
+
+            list.api_update_column(moved_card_id, 'todo_column_id', new_column_id);
         },
 
         dragMove: function(e)
@@ -515,7 +701,7 @@
     };
 
 })(window.jQuery || window.Zepto, window, document);
-/*my scripts*/
+/*scripts*/
 $('.dd').nestable('serialize');
 $('.viewlist').on('click', function() {
     $('ol.kanban').addClass('list')
@@ -528,12 +714,5 @@ $('.viewkanban').on('click', function() {
     $('ol.kanban').removeClass('list')
     $('menu').addClass('kanban')
     $('menu').removeClass('list')
-});
-/*colors*/
-$('#color').spectrum({
-    color: "#f00",
-    change: function(color) {
-        $("#label").text("change called: " + color.toHexString());
-    }
 });
 //# sourceURL=pen.js
