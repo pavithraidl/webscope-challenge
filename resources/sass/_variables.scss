@@ -1,13 +1,7 @@
 
-// Body
-$body-bg: #f8fafc;
-
-// Typography
-$font-family-sans-serif: "Nunito", sans-serif;
-$font-size-base: 0.9rem;
-$line-height-base: 1.6;
 
 // Colors
+$white: #f8fafc;
 $blue: #3490dc;
 $indigo: #6574cd;
 $purple: #9561e2;
@@ -18,3 +12,15 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+$primary: #fb7f68 !default;
+$primary-gradient-light: #fbb266;
+$primary-gradient-hard: #fb7f68;
+
+// Default color gradient
+@mixin bg-gradient() {
+  background: $primary-gradient-light; /* Old browsers */
+  background: -moz-linear-gradient(bottom, $primary-gradient-light 0%, $primary-gradient-hard 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(bottom, $primary-gradient-light 0%,$primary-gradient-hard 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to top, $primary-gradient-light 0%,$primary-gradient-hard 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$primary-gradient-light, endColorstr=$primary-gradient-hard,GradientType=0 ); /* IE6-9 */
+}
