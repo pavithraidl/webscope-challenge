@@ -10,40 +10,44 @@
             use App\TodoCard;
 
             $todo_board     = TodoBoard::where('status', 1)->where('user_id', Auth::user()->id)->first();
-            $todo_columns   = TodoColumn::where('status', 1)->where('board_id', $todo_board->id)->get();
-        ?>
 
-        @foreach($todo_columns as $column)
+            if( isset($todo_board) && is_object($todo_board) ) :
+                $todo_columns   = TodoColumn::where('status', 1)->where('board_id', $todo_board->id)->get();
+                ?>
 
-            <?php
-                $todo_cards = TodoCard::where('status', 1)->where('todo_column_id', $column->id)->get();
-            ?>
-        <ol class=" To-do" id="column-{{ $column->id }}" style="border-top: 5px solid {{ $column->color }};">
-            <div class="top-controllers">
-                <i class="material-icons delete-column pointer">delete</i>
-                <input type="hidden" data-id="{{ $column->id }}" value="{{ $column->color }}" class="pick-a-color form-control">
-            </div>
-            <div class="title">
-                <h2><input type="text" placeholder="Title..." class="input-column-title" value="{{ $column->name }}" /> </h2>
-            </div>
+                @foreach($todo_columns as $column)
 
-            <li class="dd-item default-blank"></li>
-            @foreach($todo_cards as $card)
-                <li class="dd-item" data-id="{{ $card->id }}">
-                    <h3 class="title"><i class=" material-icons dd-handle ">filter_none</i> <input type="input" class="input-todo-title" placeholder="todo title..." value="{{ $card->title }}" /></h3>
-                    <textarea class="text card-description" contenteditable="true" placeholder="description">{{ $card->body }}</textarea>
-                    <div class="actions">
-                        <i class="material-icons delete-card pointer">delete</i>
+                    <?php
+                        $todo_cards = TodoCard::where('status', 1)->where('todo_column_id', $column->id)->get();
+                    ?>
+                <ol class=" To-do" id="column-{{ $column->id }}" style="border-top: 5px solid {{ $column->color }};">
+                    <div class="top-controllers">
+                        <i class="material-icons delete-column pointer">delete</i>
+                        <input type="hidden" data-id="{{ $column->id }}" value="{{ $column->color }}" class="pick-a-color form-control">
                     </div>
-                </li>
-            @endforeach
+                    <div class="title">
+                        <h2><input type="text" placeholder="Title..." class="input-column-title" value="{{ $column->name }}" /> </h2>
+                    </div>
 
-                <div class="actions">
-                    <button class="addbutt btn-add-card"><i class="material-icons">control_point</i> Add Todo</button>
-                </div>
-        </ol>
-        @endforeach
+                    <li class="dd-item default-blank"></li>
+                    @foreach($todo_cards as $card)
+                        <li class="dd-item" data-id="{{ $card->id }}">
+                            <h3 class="title"><i class=" material-icons dd-handle ">filter_none</i> <input type="input" class="input-todo-title" placeholder="todo title..." value="{{ $card->title }}" /></h3>
+                            <textarea class="text card-description" contenteditable="true" placeholder="description">{{ $card->body }}</textarea>
+                            <div class="actions">
+                                <i class="material-icons delete-card pointer">delete</i>
+                            </div>
+                        </li>
+                    @endforeach
 
+                        <div class="actions">
+                            <button class="addbutt btn-add-card"><i class="material-icons">control_point</i> Add Todo</button>
+                        </div>
+                </ol>
+                @endforeach
+            @else
+                <!-- Create your first card html -->
+            @endif
     </div>
 
     <menu class="">

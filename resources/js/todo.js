@@ -49,7 +49,7 @@
                           '         <h2><input type="text" placeholder="Title..." class="input-column-title" /> </h2>' +
                           '     </div>' +
                           '     <div class="actions">' +
-                          '         <button class="addbutt"><i class="material-icons">control_point</i> Add Todo</button>' +
+                          '         <button class="addbutt  btn-add-card"><i class="material-icons">control_point</i> Add Todo</button>' +
                           '     </div>' +
                           '</ol>',
         todoCardHTML    : '<li class="dd-item">' +
