@@ -41,7 +41,7 @@ class TodoCardController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response : card id
      */
     public function store(Request $request)
     {
@@ -92,8 +92,8 @@ class TodoCardController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\TodoCard  $todoCard
+     * @param  \Illuminate\Http\Request  $request : [ update field, update value]
+     * @param  \App\TodoCard  $id : todo card id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)

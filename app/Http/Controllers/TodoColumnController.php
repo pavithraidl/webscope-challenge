@@ -41,7 +41,6 @@ class TodoColumnController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Void
      * @return new column ID
      */
     public function store()
@@ -72,7 +71,7 @@ class TodoColumnController extends Controller
 
         } catch (\Exception $ex) {
 
-            $this->SystemException->store($ex, $this->controller_name, 'create');
+            $this->SystemException->store($ex, $this->controller_name, 'store');
             return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -102,8 +101,8 @@ class TodoColumnController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\TodoColumn  $todoColumn
+     * @param  \Illuminate\Http\Request  $request : [update field, update value]
+     * @param  \App\TodoColumn  $id : todo column id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
