@@ -101,7 +101,7 @@ class TodoCardController extends Controller
 
         try {
 
-            $value  = !empty( $request->value ) ? $request->value: "" ;
+            $value  = !empty( $request->value ) || $request->value === 0 ? $request->value: "" ;
 
             DB::table('todo_cards')->where('id', $id)->update(array(
                 $request->field => $value

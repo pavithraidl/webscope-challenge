@@ -527,3 +527,45 @@ ol {
   }
 }
 
+.pointer {
+  cursor: pointer !important;
+}
+
+.top-controllers {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  font-size: 8px;
+  color: #b0bec5;
+
+  i {
+    font-size: 18px;
+
+    &.delete-column {
+      float: right;
+    }
+  }
+}
+
+
+.input-group.pick-a-color-markup {
+  width: 45px;
+  float: left;
+  top: -18px;
+
+  .input-group-addon {
+    display: none;
+  }
+}
+
+.pick-a-color-markup .input-group-btn .color-dropdown {
+  padding: 0 !important;
+}
+
+.pick-a-color-markup .color-preview {
+  height: 1.429em;
+  width: 1.429em;
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 5px;
+}

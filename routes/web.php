@@ -21,4 +21,6 @@ Route::put('todo-column/{id}', 'TodoColumnController@update');
 
 Route::post('todo-card', 'TodoCardController@store');
 
-Route::put('todo-column/{id}', 'TodoCardController@update');
+Route::put('todo-card/{id}', 'TodoCardController@update');
+
+Route::get('/get-chart-data/', 'ChartDataController@getChartData');

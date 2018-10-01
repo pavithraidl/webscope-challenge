@@ -1,6 +1,13 @@
 (function($, window, document, undefined)
 {
 
+
+    $(document).ready(function()
+    {
+        $(".pick-a-color").pickAColor();
+    });
+
+
     var hasTouch = 'ontouchstart' in document;
 
     /**
@@ -102,19 +109,18 @@
                 list.api_add_todo_card(el);
             });
 
-            // // Set/Unset card description placeholder
-            // $(document).on("focus", ".card-description", function(e) {
-            //     var el  = $(event.target);
-            //     if( $.trim(el.html() === "description...") ) {
-            //         el.html("");
-            //     }
-            // });
-            // $(document).on("blur", ".card-description", function(e) {
-            //     var el  = $(event.target);
-            //     if( el.html() === "" ) {
-            //         el.html("description...");
-            //     }
-            // });
+            // Change column Color
+            $(document).on("change", ".pick-a-color.form-control", function (e) {
+
+                setTimeout(function () {
+                    var column_id   = window.selectedColumn;
+                    var color       = '#'+window.columnSelectedColor;
+
+                    $('#column-'+column_id).attr('style', 'border-top: 5px solid '+color);
+
+                    list.api_update_column(column_id, 'color', color);
+                }, 20);
+            });
 
             //Change Card title
             $(document).on("change", ".input-todo-title", function(e) {
@@ -124,7 +130,7 @@
 
                 var value       = $(event.target).val();
 
-                list.api_update_column($card_id, 'title', value);
+                list.api_update_card($card_id, 'title', value);
             });
 
 
@@ -136,10 +142,33 @@
 
                 var value       = $(event.target).val();
 
-                list.api_update_column($card_id, 'body', value);
+                list.api_update_card($card_id, 'body', value);
+            });
+
+            // Delete card
+            $(document).on('click', ".delete-card", function (e) {
+                var $card_id   = ($(event.target).closest( "li" )
+                    .attr('data-id'));
+
+                $(event.target).closest( "li" ).fadeOut(200);
+
+                var value       = 0;
+
+                list.api_update_card($card_id, 'status', value);
             });
 
 
+            // Delete column
+            $(document).on('click', ".delete-column", function (e) {
+                var column_id   = ($(event.target).closest( "ol" )
+                    .attr('id')).replace('column-', '');
+
+                $(event.target).closest( "ol" ).fadeOut(200);
+
+                var value       = 0;
+
+                list.api_update_column(column_id, 'status', value);
+            });
 
             // !end bind events
 
@@ -714,5 +743,9 @@ $('.viewkanban').on('click', function() {
     $('ol.kanban').removeClass('list')
     $('menu').addClass('kanban')
     $('menu').removeClass('list')
+});
+$(".pick-a-color.form-control").on("change", function () {
+    window.columnSelectedColor  = $(this).val();
+    window.selectedColumn       = $(this).attr('data-id');
 });
 //# sourceURL=pen.js

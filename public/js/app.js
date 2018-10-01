@@ -791,7 +791,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__login__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__login___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__login__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__chart__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__chart___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__chart__);
 __webpack_require__(10);
 
 
@@ -800,8 +799,9 @@ __webpack_require__(10);
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 
 window._ = __webpack_require__(11);
 window.Popper = __webpack_require__(13).default;
@@ -21615,6 +21615,10 @@ module.exports = function spread(callback) {
 
 (function ($, window, document, undefined) {
 
+    $(document).ready(function () {
+        $(".pick-a-color").pickAColor();
+    });
+
     var hasTouch = 'ontouchstart' in document;
 
     /**
@@ -21693,19 +21697,18 @@ module.exports = function spread(callback) {
                 list.api_add_todo_card(el);
             });
 
-            // // Set/Unset card description placeholder
-            // $(document).on("focus", ".card-description", function(e) {
-            //     var el  = $(event.target);
-            //     if( $.trim(el.html() === "description...") ) {
-            //         el.html("");
-            //     }
-            // });
-            // $(document).on("blur", ".card-description", function(e) {
-            //     var el  = $(event.target);
-            //     if( el.html() === "" ) {
-            //         el.html("description...");
-            //     }
-            // });
+            // Change column Color
+            $(document).on("change", ".pick-a-color.form-control", function (e) {
+
+                setTimeout(function () {
+                    var column_id = window.selectedColumn;
+                    var color = '#' + window.columnSelectedColor;
+
+                    $('#column-' + column_id).attr('style', 'border-top: 5px solid ' + color);
+
+                    list.api_update_column(column_id, 'color', color);
+                }, 20);
+            });
 
             //Change Card title
             $(document).on("change", ".input-todo-title", function (e) {
@@ -21713,7 +21716,7 @@ module.exports = function spread(callback) {
 
                 var value = $(event.target).val();
 
-                list.api_update_column($card_id, 'title', value);
+                list.api_update_card($card_id, 'title', value);
             });
 
             //Change Card description
@@ -21722,7 +21725,29 @@ module.exports = function spread(callback) {
 
                 var value = $(event.target).val();
 
-                list.api_update_column($card_id, 'body', value);
+                list.api_update_card($card_id, 'body', value);
+            });
+
+            // Delete card
+            $(document).on('click', ".delete-card", function (e) {
+                var $card_id = $(event.target).closest("li").attr('data-id');
+
+                $(event.target).closest("li").fadeOut(200);
+
+                var value = 0;
+
+                list.api_update_card($card_id, 'status', value);
+            });
+
+            // Delete column
+            $(document).on('click', ".delete-column", function (e) {
+                var column_id = $(event.target).closest("ol").attr('id').replace('column-', '');
+
+                $(event.target).closest("ol").fadeOut(200);
+
+                var value = 0;
+
+                list.api_update_column(column_id, 'status', value);
             });
 
             // !end bind events
@@ -22262,6 +22287,10 @@ $('.viewkanban').on('click', function () {
     $('menu').addClass('kanban');
     $('menu').removeClass('list');
 });
+$(".pick-a-color.form-control").on("change", function () {
+    window.columnSelectedColor = $(this).val();
+    window.selectedColumn = $(this).attr('data-id');
+});
 //# sourceURL=pen.js
 
 /***/ }),
@@ -22329,46 +22358,45 @@ $(function () {
 
 $(".btn-display-modal, .modal .close-modal ").on('click', function () {
     $('.modal').toggleClass('loaded');
-});
 
-new Chart(document.getElementById("myChart"), {
-    type: 'line',
-    data: {
-        labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
-        datasets: [{
-            data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
-            label: "Africa",
-            borderColor: "#3e95cd",
-            fill: false
-        }, {
-            data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
-            label: "Asia",
-            borderColor: "#8e5ea2",
-            fill: false
-        }, {
-            data: [168, 170, 178, 190, 203, 276, 408, 547, 675, 734],
-            label: "Europe",
-            borderColor: "#3cba9f",
-            fill: false
-        }, {
-            data: [40, 20, 10, 16, 24, 38, 74, 167, 508, 784],
-            label: "Latin America",
-            borderColor: "#e8c3b9",
-            fill: false
-        }, {
-            data: [6, 3, 2, 2, 7, 26, 82, 172, 312, 433],
-            label: "North America",
-            borderColor: "#c45850",
-            fill: false
-        }]
-    },
-    options: {
-        title: {
-            display: true,
-            text: 'World population per region (in millions)'
-        }
+    if ($('.modal').hasClass('loaded')) {
+        initChart();
     }
 });
+
+function initChart() {
+    var url = '/get-chart-data/';
+
+    axios.get(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            // other configuration there
+        } }).then(function (response) {
+
+        console.log(response);
+        new Chart(document.getElementById("myChart"), {
+            type: 'pie',
+            data: {
+                labels: response.data.labels,
+                datasets: [{
+                    label: "Todo Columns",
+                    backgroundColor: response.data.datasets.backgroundColor,
+                    data: response.data.datasets.data
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Predicted world population (millions) in 2050'
+                }
+            }
+        });
+    }).catch(function (error) {
+        alert('oops. Error occurred.');
+        console.log(error);
+    });
+}
 
 /***/ }),
 /* 54 */,
