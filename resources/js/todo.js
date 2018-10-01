@@ -544,7 +544,7 @@
             var moved_card_id   = el.attr('data-id');
             var new_column_id   = (el.closest('.To-do').attr('id')).replace('column-', '');
 
-            list.api_update_column(moved_card_id, 'todo_column_id', new_column_id);
+            list.api_update_card(moved_card_id, 'todo_column_id', new_column_id);
         },
 
         dragMove: function(e)

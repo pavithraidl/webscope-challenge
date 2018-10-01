@@ -72,7 +72,7 @@ class TodoColumnController extends Controller
         } catch (\Exception $ex) {
 
             $this->SystemException->store($ex, $this->controller_name, 'store');
-            return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json($ex, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -119,7 +119,7 @@ class TodoColumnController extends Controller
         }  catch (\Exception $ex) {
 
             $this->SystemException->store($ex, $this->controller_name, 'update');
-            return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json($ex, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
